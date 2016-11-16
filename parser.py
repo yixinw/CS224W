@@ -20,6 +20,8 @@ with open(data_dir + data_filename, 'r') as f:
         # Write out when we have reached the end of a paper.
         if len(line) == 0 or line[0] != '#':
             print "Parsed file", id_counter
+            # We filter out all those papers without a reference
+            # because we simply don't care about them.
             if len(paper.ref) > 0:
                 paper_list.append(paper)
             # Write to file.
@@ -58,7 +60,7 @@ with open(data_dir + data_filename, 'r') as f:
 # Write index id map to file.
 f_out = open('../data/index_id_map', 'w')
 for k,v in index_id_map.iteritems():
-    f_out.write(k + "," + v + "\n")
+    f_out.write(str(k) + "," + str(v) + "\n")
 f_out.close()
 
 # Write edgelist to file.
