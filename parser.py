@@ -19,13 +19,16 @@ with open(data_dir + data_filename, 'r') as f:
     for line in f:
         line = line.strip("\n")
         # Write out when we have reached the end of a paper.
-        if id_counter == 10000:
+        # TODO: Remove this early-breaking line.
+        if id_counter == 200:
             break
         if len(line) == 0 or line[0] != '#':
             if id_counter % 10000 == 0:
                 print "Parsed file", id_counter
             if len(paper.ref) > 0:
                 paper_list.append(paper)
+                print "ref length:", len(paper.ref)
+                print "ref id:", paper.ref
             # Write to file.
             # if paper.abstract:
             #     f_out = open('../data/abstract/'+str(paper.id), 'w')

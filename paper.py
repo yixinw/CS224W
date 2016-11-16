@@ -4,15 +4,14 @@ A class describing each paper.
 
 class Paper(object):
 
-    def __init__(self, title=None, authors=[], \
-            year=None, venue=None, id=None, ref=[], abstract=None):
-        self.title = title
-        self.authors = authors
-        self.year = year
-        self.venue = venue
-        self.id = id
-        self.ref = ref
-        self.abstract = abstract
+    def __init__(self):
+        self.title = None
+        self.authors = []
+        self.year = None
+        self.venue = None
+        self.id = None
+        self.ref = []
+        self.abstract = None
 
 '''
 #* --- paperTitle
