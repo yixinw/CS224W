@@ -11,11 +11,17 @@ index_id_map = {}
 adjacent_matrix = []
 paper_list = []
 paper_abstract_we_care = {}
+# Set this to true if we actually want to write abstract
+# of every paper in graph to a huge file. This may significantly
+# slow down the parsing process.
+write_to_abstract_file = False
+id_to_abstract_line = []
 
 # Sequentially parse every paper.
 with open(data_dir + data_filename, 'r') as f:
     paper = Paper()
     id_counter = 0
+    abstract_line_counter = 0
     for line in f:
         line = line.strip("\n")
         # Write out when we have reached the end of a paper.
@@ -27,10 +33,15 @@ with open(data_dir + data_filename, 'r') as f:
                 print "Parsed file", id_counter
             # Write to file.
             if paper.index in paper_abstract_we_care and paper.abstract is not None:
-                f_out = open('../data/abstract', 'a')
-                f_out.write(paper.abstract)
-                f_out.write("\n")
-                f_out.close()
+                if write_to_abstract_file:
+                    f_out = open('../data/abstract', 'a')
+                    f_out.write(paper.abstract)
+                    f_out.write("\n")
+                    f_out.close()
+                id_to_abstract_line.append( \
+                        (paper.id, abstract_line_counter))
+                abstract_line_counter += 1
+
             if len(paper.ref) > 0:
                 paper_list.append(paper)
             paper = Paper()
@@ -80,3 +91,8 @@ for paper in paper_list:
             f_out.write(str(this_id) + "\t" + str(neighbor_id) + "\n")
 f_out.close()
 
+# Write to a file mapping from paper id to line number in abstract file.
+f_out = open('../data/id_to_abstract_line', 'w')
+for (id, line_number) in id_to_abstract_line:
+    f_out.write(str(id) + "," + str(line_number) + "\n")
+f_out.close()
