@@ -3,7 +3,6 @@ This file reads in the data file line by line and parse it.
 '''
 
 from paper import Paper
-import IPython
 
 data_dir = '../data/'
 data_filename = 'citation-acm-v8.txt'
@@ -11,6 +10,7 @@ data_filename = 'citation-acm-v8.txt'
 index_id_map = {}
 adjacent_matrix = []
 paper_list = []
+paper_abstract_we_care = {}
 
 # Sequentially parse every paper.
 with open(data_dir + data_filename, 'r') as f:
@@ -20,20 +20,19 @@ with open(data_dir + data_filename, 'r') as f:
         line = line.strip("\n")
         # Write out when we have reached the end of a paper.
         # TODO: Remove this early-breaking line.
-        if id_counter == 200:
+        if id_counter == 1000:
             break
         if len(line) == 0 or line[0] != '#':
             if id_counter % 10000 == 0:
                 print "Parsed file", id_counter
+            # Write to file.
+            if paper.index in paper_abstract_we_care and paper.abstract is not None:
+                f_out = open('../data/abstract', 'a')
+                f_out.write(paper.abstract)
+                f_out.write("\n")
+                f_out.close()
             if len(paper.ref) > 0:
                 paper_list.append(paper)
-                print "ref length:", len(paper.ref)
-                print "ref id:", paper.ref
-            # Write to file.
-            # if paper.abstract:
-            #     f_out = open('../data/abstract/'+str(paper.id), 'w')
-            #     f_out.write(paper.abstract)
-            #     f_out.close()
             paper = Paper()
             continue
         # Parse title.
@@ -52,17 +51,18 @@ with open(data_dir + data_filename, 'r') as f:
             paper.venue = line[2:]
         # Parse index.
         elif line[1:6] == 'index':
+            paper.index = line[6:]
             paper.id = id_counter
             index_id_map[line[6:]] = id_counter
             id_counter += 1
         # Parse references.
         elif line[1] == '%':
-            paper.ref.append(line[2:])
+            neighbor_index = line[2:]
+            paper.ref.append(neighbor_index)
+            paper_abstract_we_care[neighbor_index] = None
         # Parse abstract.
         elif line[1] == '!':
             paper.abstract = line[2:]
-
-IPython.embed()
 
 # Write index id map to file.
 f_out = open('../data/index_id_map', 'w')

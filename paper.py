@@ -9,6 +9,7 @@ class Paper(object):
         self.authors = []
         self.year = None
         self.venue = None
+        self.index = None
         self.id = None
         self.ref = []
         self.abstract = None
