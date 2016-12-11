@@ -1,24 +1,16 @@
 from collections import Counter
 from paper import Paper
+import extract_community_util
 
 '''
 This function extracts community members. It should go to util.py.
 '''
-def get_community_members(community_filepath):
-    community_member_list = []
-    with open(community_filepath, 'r') as f:
-        for community_line in f:
-            community_members = \
-                    [int(x) for x in \
-                    community_line.strip("\n").strip("\t").split("\t")]
-            community_member_list.append(community_members)
-    return community_member_list
 
 data_dir = '../data/'
 community_filename = '2_cmtyvv.txt'
 data_filename = 'citation-acm-v8.txt'
 
-community_member_list = get_community_members(data_dir + community_filename)
+community_member_list = extract_community_util.get_community_members(data_dir + community_filename)
 
 num_top_communities = 30
 community_conf_counter_list = []
