@@ -48,8 +48,8 @@ def read_tfidf_file(filename):
     community_words = []
     with open(filename, 'r') as f:
         for line in f:
-            line = line.strip("\n").strip(',')
-            words = line.split(',')
+            line = line.strip("\n").strip(' ')
+            words = line.split(' ')
             community_words.append(words)
     return community_words
 
@@ -57,7 +57,7 @@ def write_tfidf_file(filename, community_top_words):
     f_out = open(filename, 'w')
     for words in community_top_words:
         for w in words:
-            f_out.write(w + ",")
+            f_out.write(w + " ")
         f_out.write("\n")
     f_out.close()
 

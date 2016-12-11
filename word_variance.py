@@ -16,12 +16,10 @@ def compute_mean_cosine_distance(m1, m2):
     m2 = m2 / col_norm
     similarity = m1.T.dot(m2)
     mean_similarity = np.mean(similarity)
-    print 1 - np.min(similarity)
-    print 1 - np.max(similarity)
     return mean_similarity
 
 data_dir = '../data/'
-tfidf_filename = 'community_tfidf'
+tfidf_filename = 'keyword_profile_30'
 community_filename = '2_cmtyvv.txt'
 
 # Get community keywords.
@@ -85,10 +83,12 @@ for communityId in range(num_top_communities):
         if communityId == neighborId:
             in_class_distance += mean_cosine_distance
             in_class_counter += 1
+            print "IN CLASS: ", mean_cosine_distance
         # Calculate average word cosine distance between class.
         else:
             between_class_distance += mean_cosine_distance
             between_class_counter += 1
+            print "BETWEEN CLASS: ", mean_cosine_distance
 
 # Calculate average cosine distance within and between classes.
 in_class_distance = in_class_distance / float(in_class_counter)
@@ -97,9 +97,22 @@ between_class_distance = between_class_distance \
 print in_class_distance, between_class_distance
 print confusion_matrix
 assert in_class_counter == num_top_communities
-'''
-plt.figure()
-plt.clf()
 
-plt.show()
-'''
+column_labels = range(num_top_communities)
+row_labels = range(num_top_communities)
+fig, ax = plt.subplots()
+heatmap = ax.pcolor(1 - confusion_matrix, cmap=plt.cm.Blues)
+
+# put the major ticks at the middle of each cell
+ax.set_xticks(np.arange(confusion_matrix.shape[0])+0.5, minor=False)
+ax.set_yticks(np.arange(confusion_matrix.shape[1])+0.5, minor=False)
+
+# want a more natural, table-like display
+ax.invert_yaxis()
+ax.xaxis.tick_top()
+
+ax.set_xticklabels(row_labels, minor=False)
+ax.set_yticklabels(column_labels, minor=False)
+
+plt.colorbar(heatmap, ax=ax)
+plt.savefig('similarity_matrix.eps', format='eps', dpi=1000)

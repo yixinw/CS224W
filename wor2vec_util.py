@@ -6,6 +6,9 @@
 # dictionary - dictionary[word] = idx
 # reverse_dictionary - reverse_dictionary[idx] = word
 
+import numpy as np
+import csv
+
 def load_embedding(filename='title'):
 
     # filename = "title"
