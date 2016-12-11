@@ -37,7 +37,6 @@ def extract_tfidf(data_dir,
                             abstract_line_number)
                     abstract_list.append(abstract.strip("\n"))
             all_community_abstract.append(' '.join(abstract_list))
-
         # Count words and extract tf-idf features.
         vectorizer = TfidfVectorizer(min_df=1, stop_words='english')
         word_count = vectorizer.fit_transform(all_community_abstract)

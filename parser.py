@@ -3,6 +3,8 @@ This file reads in the data file line by line and parse it.
 '''
 
 from paper import Paper
+import re
+from nltk.stem import *
 
 data_dir = '../data/'
 data_filename = 'citation-acm-v8.txt'
@@ -15,7 +17,10 @@ paper_abstract_we_care = {}
 # of every paper in graph to a huge file. This may significantly
 # slow down the parsing process.
 write_to_abstract_file = False
+write_to_title_file = True
 id_to_abstract_line = []
+stemmer = PorterStemmer()
+title_file_content_list = []
 
 # Sequentially parse every paper.
 with open(data_dir + data_filename, 'r') as f:
@@ -26,8 +31,8 @@ with open(data_dir + data_filename, 'r') as f:
         line = line.strip("\n")
         # Write out when we have reached the end of a paper.
         # TODO: Remove this early-breaking line.
-        if id_counter == 1000:
-            break
+        #if id_counter == 1000:
+        #    break
         if len(line) == 0 or line[0] != '#':
             if id_counter % 10000 == 0:
                 print "Parsed file", id_counter
@@ -38,6 +43,13 @@ with open(data_dir + data_filename, 'r') as f:
                     f_out.write(paper.abstract)
                     f_out.write("\n")
                     f_out.close()
+                if write_to_title_file:
+                    # Lower case and stem the title.
+                    title = re.sub('\W+',' ',paper.title)
+                    title = title.lower()
+                    title_stemmed = [stemmer.stem(word)
+                            for word in title.split(' ')]
+                    title_file_content_list.append(' '.join(title_stemmed))
                 id_to_abstract_line.append( \
                         (paper.id, abstract_line_counter))
                 abstract_line_counter += 1
@@ -95,4 +107,9 @@ f_out.close()
 f_out = open('../data/id_to_abstract_line', 'w')
 for (id, line_number) in id_to_abstract_line:
     f_out.write(str(id) + "," + str(line_number) + "\n")
+f_out.close()
+
+f_out = open('../data/title', 'w')
+for title in title_file_content_list:
+    f_out.write(title + "\n")
 f_out.close()

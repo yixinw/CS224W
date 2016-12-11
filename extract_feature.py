@@ -3,13 +3,12 @@ This file reads in the community file, finds all abstract associated with this c
 '''
 
 from extract_feature_util import *
-import IPython
 import numpy as np
 
 data_dir = '../data/'
 community_filename = '2_cmtyvv.txt'
-abstract_filename = 'abstract_2'
-id_to_abstract_line_filename = 'id_to_abstract_line_2'
+abstract_filename = 'title'
+id_to_abstract_line_filename = 'id_to_abstract_line'
 tfidf_filename = 'community_tfidf'
 
 # Extract tf-idf features.
