@@ -10,7 +10,8 @@ import linecache
 def extract_tfidf(data_dir,
         community_filename,
         abstract_filename,
-        id_to_abstract_line_filename):
+        id_to_abstract_line_filename,
+        year_filter):
 
     id_to_abstract_line_map = {}
     with open(data_dir + id_to_abstract_line_filename, 'r') as id_to_abstract_line_file:
@@ -30,18 +31,20 @@ def extract_tfidf(data_dir,
                     [int(x) for x in community_line.strip("\n").strip("\t").split("\t")]
             abstract_list = []
             for member_id in community_members:
-                if member_id in id_to_abstract_line_map:
-                    abstract_line_number = id_to_abstract_line_map[member_id]
-                    abstract = linecache.getline(
-                            data_dir+abstract_filename,
-                            abstract_line_number)
-                    abstract_list.append(abstract.strip("\n"))
+                if year_filter is None or member_id in year_filter:
+                    if member_id in id_to_abstract_line_map:
+                        abstract_line_number = id_to_abstract_line_map[member_id]
+                        abstract = linecache.getline(
+                                data_dir+abstract_filename,
+                                abstract_line_number)
+                        abstract_list.append(abstract.strip("\n"))
             all_community_abstract.append(' '.join(abstract_list))
         # Count words and extract tf-idf features.
         vectorizer = TfidfVectorizer(min_df=1, stop_words='english')
         word_count = vectorizer.fit_transform(all_community_abstract)
         dictionary = [x for x in vectorizer.get_feature_names()]
         vocabulary = vectorizer.vocabulary_
+
         return word_count, dictionary, vocabulary
 
 def read_tfidf_file(filename):

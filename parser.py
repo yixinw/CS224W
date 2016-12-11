@@ -18,9 +18,11 @@ paper_abstract_we_care = {}
 # slow down the parsing process.
 write_to_abstract_file = False
 write_to_title_file = True
+write_to_year_file = True
 id_to_abstract_line = []
 stemmer = PorterStemmer()
 title_file_content_list = []
+year_to_id_map = {}
 
 # Sequentially parse every paper.
 with open(data_dir + data_filename, 'r') as f:
@@ -37,7 +39,7 @@ with open(data_dir + data_filename, 'r') as f:
             if id_counter % 10000 == 0:
                 print "Parsed file", id_counter
             # Write to file.
-            if paper.index in paper_abstract_we_care and paper.abstract is not None:
+            if paper.index in paper_abstract_we_care and paper.title is not None:
                 if write_to_abstract_file:
                     f_out = open('../data/abstract', 'a')
                     f_out.write(paper.abstract)
@@ -50,6 +52,13 @@ with open(data_dir + data_filename, 'r') as f:
                     title_stemmed = [stemmer.stem(word)
                             for word in title.split(' ')]
                     title_file_content_list.append(' '.join(title_stemmed))
+                if write_to_year_file:
+                    year = str(paper.year)
+                    if year in year_to_id_map:
+                        year_to_id_map[year].append(str(paper.id))
+                    else:
+                        year_to_id_map[year] = [str(paper.id)]
+
                 id_to_abstract_line.append( \
                         (paper.id, abstract_line_counter))
                 abstract_line_counter += 1
@@ -109,7 +118,18 @@ for (id, line_number) in id_to_abstract_line:
     f_out.write(str(id) + "," + str(line_number) + "\n")
 f_out.close()
 
-f_out = open('../data/title', 'w')
-for title in title_file_content_list:
-    f_out.write(title + "\n")
-f_out.close()
+if write_to_title_file:
+    f_out = open('../data/title', 'w')
+    for title in title_file_content_list:
+        if len(title) == 0:
+            print "zero length title"
+        f_out.write(title + "\n")
+    f_out.close()
+
+if write_to_year_file:
+    f_out = open('../data/yearly_paper', 'w')
+    for year, paper_list in year_to_id_map.iteritems():
+        f_out.write(year + " ")
+        f_out.write(','.join(paper_list))
+        f_out.write("\n")
+    f_out.close()

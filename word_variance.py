@@ -19,7 +19,7 @@ def compute_mean_cosine_distance(m1, m2):
     return mean_similarity
 
 data_dir = '../data/'
-tfidf_filename = 'keyword_profile_30'
+tfidf_filename = 'keyword_profile_30_update'
 community_filename = '2_cmtyvv.txt'
 
 # Get community keywords.
@@ -111,7 +111,7 @@ ax.set_yticks(np.arange(confusion_matrix.shape[1])+0.5, minor=False)
 ax.invert_yaxis()
 ax.xaxis.tick_top()
 
-ax.set_xticklabels(row_labels, minor=False)
+ax.set_xticklabels(row_labels, minor=False, fontsize=6)
 ax.set_yticklabels(column_labels, minor=False)
 
 plt.colorbar(heatmap, ax=ax)

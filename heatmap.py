@@ -15,7 +15,7 @@ ax.set_yticks(np.arange(data.shape[1])+0.5, minor=False)
 ax.invert_yaxis()
 ax.xaxis.tick_top()
 
-ax.set_xticklabels(row_labels, minor=False)
+ax.set_xticklabels(row_labels, minor=False, fontsize=6)
 ax.set_yticklabels(column_labels, minor=False)
 
 plt.colorbar(heatmap, ax=ax)
