@@ -99,17 +99,20 @@ while itr < 10:
     else:
         top_idx = top_idx_next[:]
 
+fd = open("keyword_profile_30",'w')
 for i in range(num_community):
-    print "for community " + str(i)
+    # print "for community " + str(i)
     for idx in top_idx[i]:
-        print reverse_dict[idx]
+        # print reverse_dict[idx]
+        fd.write(reverse_dict[idx]+' ')
+    fd.write('\n')
 
 from sklearn.manifold import TSNE
 import matplotlib.pyplot as plt
 
 color = [(np.random.rand(),np.random.rand(),np.random.rand()) for _ in range(num_community)]
 
-threshold = 100
+threshold = 99
 plt_vec = None
 labels = []
 c = []
